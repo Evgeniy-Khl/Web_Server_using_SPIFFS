@@ -121,6 +121,16 @@ void setup(){
     request->send(SPIFFS, "/index.html", String(), false, processor);
   });
   
+  // Route for SETUP1 / web page
+  server.on("/set1", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/setup.html", String(), false, processor);
+  });
+  
+  // Route for SETUP2 / web page
+  server.on("/set2", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/setup.html", String(), false, processor);
+  });
+  
   // Route to load style.css file
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
