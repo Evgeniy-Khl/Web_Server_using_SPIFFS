@@ -17,18 +17,23 @@
 #include <Wire.h>
 #include <ESP8266FtpServer.h>       // Бібліотека для роботи з SPIFFS через FTP
 
-//#include <Adafruit_Sensor.h>
-//#include <Adafruit_BME280.h>
+// Set to true to define Relay as Normally Open (NO)
+#define RELAY_NO    true
 
-//Adafruit_BME280 bme; // I2C
-//Adafruit_BME280 bme(BME_CS); // hardware SPI
-//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
+// Set number of relays
+#define NUM_RELAYS  5
+
+// Assign each GPIO to a relay
+int relayGPIOs[NUM_RELAYS] = {5, 4, 14, 12, 13};
 
 FtpServer ftpSrv;                   // Оголошуємо об'єкт для роботи з модулем через FTP (для налагодження HTML)
 
 // Replace with your network credentials
 const char* ssid = "Andrew_2023";
 const char* password = "graviton19630301";
+
+const char* PARAM_INPUT_1 = "relay";  
+const char* PARAM_INPUT_2 = "state";
 
 float temperature = 28.7;
 float humidity = 65.3;
@@ -86,6 +91,26 @@ String processor(const String& var){
   }
   return String();
 }
+
+String relayState(int numRelay){
+  if(RELAY_NO){
+    if(digitalRead(relayGPIOs[numRelay-1])){
+      return "";
+    }
+    else {
+      return "checked";
+    }
+  }
+  else {
+    if(digitalRead(relayGPIOs[numRelay-1])){
+      return "checked";
+    }
+    else {
+      return "";
+    }
+  }
+  return "";
+}
  
 void setup(){
   // Serial port for debugging purposes
@@ -102,6 +127,17 @@ void setup(){
   if(!SPIFFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
+  }
+  
+  // Set all relays to off when the program starts - if set to Normally Open (NO), the relay is off when you set the relay to HIGH
+  for(int i=1; i<=NUM_RELAYS; i++){
+    pinMode(relayGPIOs[i-1], OUTPUT);
+    if(RELAY_NO){
+      digitalWrite(relayGPIOs[i-1], HIGH);
+    }
+    else{
+      digitalWrite(relayGPIOs[i-1], LOW);
+    }
   }
 
   // Connect to Wi-Fi
@@ -122,18 +158,42 @@ void setup(){
   });
   
   // Route for SETUP1 / web page
-  server.on("/set1", HTTP_GET, [](AsyncWebServerRequest *request){
+  server.on("/setup", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/setup.html", String(), false, processor);
   });
   
   // Route for SETUP2 / web page
-  server.on("/set2", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/setup.html", String(), false, processor);
+  server.on("/switch", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/switch.html", String(), false, processor);
   });
   
-  // Route to load style.css file
-  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/style.css", "text/css");
+  // Send a GET request to <ESP_IP>/update?relay=<inputMessage>&state=<inputMessage2>
+  server.on("/update", HTTP_GET, [] (AsyncWebServerRequest *request) {
+    String inputMessage;
+    String inputParam;
+    String inputMessage2;
+    String inputParam2;
+    // GET input1 value on <ESP_IP>/update?relay=<inputMessage>
+    if (request->hasParam(PARAM_INPUT_1) & request->hasParam(PARAM_INPUT_2)) {
+      inputMessage = request->getParam(PARAM_INPUT_1)->value();
+      inputParam = PARAM_INPUT_1;
+      inputMessage2 = request->getParam(PARAM_INPUT_2)->value();
+      inputParam2 = PARAM_INPUT_2;
+      if(RELAY_NO){
+        Serial.print("NO ");
+        digitalWrite(relayGPIOs[inputMessage.toInt()-1], !inputMessage2.toInt());
+      }
+      else{
+        Serial.print("NC ");
+        digitalWrite(relayGPIOs[inputMessage.toInt()-1], inputMessage2.toInt());
+      }
+    }
+    else {
+      inputMessage = "No message sent";
+      inputParam = "none";
+    }
+    Serial.println(inputMessage + inputMessage2);
+    request->send(200, "text/plain", "OK");
   });
 
   // Route to set GPIO to HIGH
