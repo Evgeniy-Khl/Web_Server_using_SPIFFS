@@ -90,9 +90,9 @@ String processor(const String& var){
   else if(var == "STATE14") return GPIO_status(14);
   else if(var == "STATE12") return GPIO_status(12);
   else if(var == "STATE13") return GPIO_status(13);
-  else if (var == "TEMPERATURE") return getTemperature();
-  else if (var == "HUMIDITY") return getHumidity();
-  else if (var == "PRESSURE") return getPressure();
+  else if (var == "TMP") return getTemperature();
+  else if (var == "HUM") return getHumidity();
+//  else if (var == "PRESSURE") return getPressure();
   return String();
 }
 

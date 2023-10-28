@@ -17,9 +17,18 @@
 	  margin: 0px auto;
 	  text-align: center;
 	}
-	h1 {
-	  color: #0F3376;
-	  padding: 2vh;
+    body {
+  	  background-color: lightblue;
+	}
+    h1 {
+  	  color: white;
+  	  text-align: center;
+	}
+    div {
+      width: 400px;
+      border: 5px solid Gray;
+      padding: 10px;
+      margin: 0px auto;
 	}
 	p {
 	  font-size: 1.5rem;
@@ -47,41 +56,40 @@
 	 }
 	.sensor-labels {
 	  font-size: 1.5rem;
-	  vertical-align:middle;
-	  padding-bottom: 15px;
+	  text-decoration: underline;
 	}
   </style>
 </head>
 <body>
   <h1>ESP8266 Web Server</h1> 
-  <p>GPIO N2 <strong> %STATE2%</strong></p>
-  <p>GPIO N5 <strong> %STATE5%</strong></p>
-  <p>GPIO N4 <strong> %STATE4%</strong></p>
-  <p>GPIO N14<strong> %STATE14%</strong></p>
-  <p>GPIO N12<strong> %STATE12%</strong></p>
-  <p>GPIO N13<strong> %STATE13%</strong></p>
   <p>
-    <a href="/off"><button class="button">ON</button></a>
-    <a href="/on"><button class="button button2">OFF</button></a>
+    <a href="/off"><button class="button button1">START</button></a>
+    <a href="/on"><button class="button button2">STOP</button></a>
   </p>
+  <div>
   <p>
-    <span class="sensor-labels">Temperature</span>
-    <span id="temperature">%TEMPERATURE%</span>
+    <span class="sensor-labels">Температура</span>
+    <span style="font-size:50px" id="temperature">%TMP%</span>
     <sup class="units">&deg;C</sup>
   </p>
   <p>
-    <span class="sensor-labels">Humidity</span>
-    <span id="humidity">%HUMIDITY%</span>
+    <span class="sensor-labels">Влажность</span>
+    <span style="font-size:50px" id="humidity">%HUM%</span>
     <sup class="units">&#37;</sup>
   </p>
+  </div>
+  <p></p>
+  <div>
+  <p>РАБОТА (2) <strong> %STATE2%</strong></p>
+  <p>НАГРЕВ (5) <strong> %STATE5%</strong></p>
+  <p>УВЛАЖНЕНИЕ (4) <strong> %STATE4%</strong></p>
+  <p>ОХЛАЖДЕНИЕ (14)<strong> %STATE14%</strong></p>
+  <p>ВЕНТИЛЯЦИЯ (12)<strong> %STATE12%</strong></p>
+  <p>ОСВЕЩЕНИЕ (13)<strong> %STATE13%</strong></p>
+  </div>
   <p>
-    <span class="sensor-labels">Pressure</span>
-    <span id="pressure">%PRESSURE%</span>
-    <sup class="units">hPa</sup>
-  </p>
-  <p>
-    <a href="/setup"><button class="button button1">Установки</button></a>
-    <a href="/switch"><button class="button button1">Переключатели</button></a>
+    <a href="/setup"><button class="button">Установки</button></a>
+    <a href="/switch"><button class="button">Переключатели</button></a>
   </p>
 </body>
 <script>
