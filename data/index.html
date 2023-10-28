@@ -53,15 +53,16 @@
   </style>
 </head>
 <body>
-  <h1>ESP8266 Web Server</h1>
+  <h1>ESP8266 Web Server</h1> 
+  <p>GPIO N2 <strong> %STATE2%</strong></p>
+  <p>GPIO N5 <strong> %STATE5%</strong></p>
+  <p>GPIO N4 <strong> %STATE4%</strong></p>
+  <p>GPIO N14<strong> %STATE14%</strong></p>
+  <p>GPIO N12<strong> %STATE12%</strong></p>
+  <p>GPIO N13<strong> %STATE13%</strong></p>
   <p>
-    <a href="/setup"><button class="button button1">Установки</button></a>
-    <a href="/switch"><button class="button button1">Переключатели</button></a>
-  </p>
-  <p>GPIO state<strong> %STATE%</strong></p>
-  <p>
-    <a href="/on"><button class="button">ON</button></a>
-    <a href="/off"><button class="button button2">OFF</button></a>
+    <a href="/off"><button class="button">ON</button></a>
+    <a href="/on"><button class="button button2">OFF</button></a>
   </p>
   <p>
     <span class="sensor-labels">Temperature</span>
@@ -78,16 +79,20 @@
     <span id="pressure">%PRESSURE%</span>
     <sup class="units">hPa</sup>
   </p>
+  <p>
+    <a href="/setup"><button class="button button1">Установки</button></a>
+    <a href="/switch"><button class="button button1">Переключатели</button></a>
+  </p>
 </body>
 <script>
   setInterval(function ( ) {
-    var xhttp = new XMLHttpRequest();
+    var xhttp = new XMLHttpRequest();			// XMLHttpRequest (XHR)- об'єкт для відправки і отримання даних з сервера без перезавантаження веб-сторінки.
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         document.getElementById("temperature").innerHTML = this.responseText;
       }
     };
-    xhttp.open("GET", "/temperature", true);
+    xhttp.open("GET", "/temperature", true);	// асинхронний способ
     xhttp.send();
   }, 10000 ) ;
 
@@ -98,7 +103,7 @@
         document.getElementById("humidity").innerHTML = this.responseText;
       }
     };
-    xhttp.open("GET", "/humidity", true);
+    xhttp.open("GET", "/humidity", true);		// асинхронний способ
     xhttp.send();
   }, 10000 ) ;
 
@@ -109,7 +114,7 @@
         document.getElementById("pressure").innerHTML = this.responseText;
       }
     };
-    xhttp.open("GET", "/pressure", true);
+    xhttp.open("GET", "/pressure", true);		// асинхронний способ
     xhttp.send();
   }, 10000 ) ;
 </script>
